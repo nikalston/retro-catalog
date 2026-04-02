@@ -3,7 +3,7 @@ backend:
   repo: nikalston/retro-catalog
   branch: main
   auth_type: pkce
-  app_id: Ov23li6V6Xfzv5cE5hMe
+  app_id: Iv23liE7KI0U8YgwgwsO
 
 site_url: https://nikalston.github.io/retro-catalog
 display_url: https://nikalston.github.io/retro-catalog
