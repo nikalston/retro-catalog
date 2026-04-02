@@ -1,0 +1,37 @@
+backend:
+  name: github
+  repo: nikalston/retro-catalog
+  branch: main
+  pkce: true
+  app_id: Ov23li6V6Xfzv5cE5hMe
+
+site_url: https://nikalston.github.io/retro-catalog
+display_url: https://nikalston.github.io/retro-catalog
+
+media_folder: static/images
+public_folder: /images
+
+collections:
+  - name: computers
+    label: Computers
+    folder: content/computers
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Brand", name: "brand", widget: "string" }
+      - { label: "Year", name: "year", widget: "number", value_type: "int" }
+      - { label: "CPU", name: "cpu", widget: "string", required: false }
+      - { label: "RAM", name: "ram", widget: "string", required: false }
+      - { label: "Storage", name: "storage", widget: "string", required: false }
+      - { label: "Display", name: "display", widget: "string", required: false }
+      - { label: "OS", name: "os", widget: "string", required: false }
+      - { label: "Condition", name: "condition", widget: "select", options: ["Working", "Partially Working", "Not Working", "Unrestored", "Restored"], required: false }
+      - { label: "Acquired", name: "acquired", widget: "string", required: false }
+      - { label: "Tagline", name: "tagline", widget: "string" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Brands", name: "brands", widget: "list", required: false }
+      - { label: "Eras", name: "eras", widget: "select", options: ["1970s", "1980s", "1990s", "2000s"], required: false, multiple: true }
+      - { label: "Types", name: "types", widget: "list", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
