@@ -1,28 +1,344 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Retro Catalog Admin</title>
-  <script>
-    window.CMS_MANUAL_INIT = true;
-  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Courier New", monospace;
+      background: #1a1a2e;
+      color: #33ff33;
+      min-height: 100vh;
+    }
+    /* Password screen */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 1rem;
+    }
+    #login-screen h1 { font-size: 1.5rem; text-shadow: 0 0 10px #33ff33; }
+    #login-screen input {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      background: #0a0a1a;
+      border: 1px solid #33ff33;
+      color: #33ff33;
+      text-align: center;
+      width: 250px;
+    }
+    #login-screen input:focus { outline: none; box-shadow: 0 0 8px #33ff33; }
+    #login-screen button {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem 2rem;
+      background: #33ff33;
+      color: #1a1a2e;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #login-screen button:hover { background: #66ff66; }
+    #login-error { color: #ff3333; display: none; }
+
+    /* Admin panel */
+    #admin-panel { display: none; padding: 2rem; max-width: 800px; margin: 0 auto; }
+    #admin-panel h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px #33ff33;
+      border-bottom: 1px solid #33ff33;
+      padding-bottom: 0.5rem;
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+      color: #88ff88;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      background: #0a0a1a;
+      border: 1px solid #33ff33;
+      color: #33ff33;
+      width: 100%;
+    }
+    .form-group textarea { min-height: 150px; resize: vertical; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      box-shadow: 0 0 6px #33ff33;
+    }
+    .form-row { display: flex; gap: 1rem; }
+    .form-row .form-group { flex: 1; }
+    .actions { margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .actions button {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem 1.5rem;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #btn-preview {
+      background: #336699;
+      color: #fff;
+    }
+    #btn-download {
+      background: #33ff33;
+      color: #1a1a2e;
+    }
+    #btn-copy {
+      background: #ff9933;
+      color: #1a1a2e;
+    }
+    .actions button:hover { opacity: 0.85; }
+
+    /* Preview */
+    #preview-section { display: none; margin-top: 2rem; }
+    #preview-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #88ff88;
+    }
+    #preview-output {
+      background: #0a0a1a;
+      border: 1px solid #33ff33;
+      padding: 1rem;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    #copy-toast {
+      display: none;
+      color: #ff9933;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
-  <script>
-    const { init } = window.CMS;
-    init({
-      config: {
-        backend: {
-          name: 'github',
-          repo: 'nikalston/retro-catalog',
-          branch: 'main',
-          auth_type: 'pkce',
-          app_id: 'Iv23liE7KI0U8YgwgwsO'
-        }
-      }
+
+<!-- Password Screen -->
+<div id="login-screen">
+  <h1>// RETRO CATALOG ADMIN //</h1>
+  <input type="password" id="password-input" placeholder="Enter password" autofocus />
+  <button onclick="checkPassword()">ACCESS</button>
+  <div id="login-error">ACCESS DENIED</div>
+</div>
+
+<!-- Admin Panel -->
+<div id="admin-panel">
+  <h1>// NEW COMPUTER ENTRY //</h1>
+
+  <div class="form-group">
+    <label>Title *</label>
+    <input type="text" id="f-title" placeholder="e.g. Commodore 64" />
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Brand *</label>
+      <input type="text" id="f-brand" placeholder="e.g. Commodore" />
+    </div>
+    <div class="form-group">
+      <label>Year *</label>
+      <input type="number" id="f-year" placeholder="e.g. 1982" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>CPU</label>
+      <input type="text" id="f-cpu" placeholder="e.g. MOS 6510 @ 1.023 MHz" />
+    </div>
+    <div class="form-group">
+      <label>RAM</label>
+      <input type="text" id="f-ram" placeholder="e.g. 64 KB" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Storage</label>
+      <input type="text" id="f-storage" placeholder="e.g. 1541 Floppy Drive" />
+    </div>
+    <div class="form-group">
+      <label>Display</label>
+      <input type="text" id="f-display" placeholder="e.g. 320x200, 16 colors" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>OS</label>
+      <input type="text" id="f-os" placeholder="e.g. BASIC 2.0" />
+    </div>
+    <div class="form-group">
+      <label>Condition</label>
+      <select id="f-condition">
+        <option value="">-- select --</option>
+        <option>Working</option>
+        <option>Partially Working</option>
+        <option>Not Working</option>
+        <option>Unrestored</option>
+        <option>Restored</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Acquired</label>
+      <input type="text" id="f-acquired" placeholder="e.g. 2023" />
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="f-type">
+        <option value="">-- select --</option>
+        <option>Desktop</option>
+        <option>Home Computer</option>
+        <option>Laptop</option>
+        <option>Workstation</option>
+        <option>Portable</option>
+        <option>Game Console</option>
+        <option>Terminal</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Era</label>
+    <select id="f-era">
+      <option value="">-- select --</option>
+      <option>1970s</option>
+      <option>1980s</option>
+      <option>1990s</option>
+      <option>2000s</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Tagline *</label>
+    <input type="text" id="f-tagline" placeholder="e.g. The best-selling single computer model of all time" />
+  </div>
+
+  <div class="form-group">
+    <label>Description (Markdown)</label>
+    <textarea id="f-body" placeholder="Write about this machine..."></textarea>
+  </div>
+
+  <div class="actions">
+    <button id="btn-preview" onclick="generatePreview()">PREVIEW</button>
+    <button id="btn-download" onclick="downloadFile()">DOWNLOAD .MD</button>
+    <button id="btn-copy" onclick="copyToClipboard()">COPY TO CLIPBOARD</button>
+  </div>
+
+  <div id="preview-section">
+    <h2>// OUTPUT PREVIEW //</h2>
+    <pre id="preview-output"></pre>
+    <div id="copy-toast">Copied to clipboard!</div>
+  </div>
+</div>
+
+<script>
+  // Hardcoded password - change this to whatever you want
+  const ADMIN_PASSWORD = "retro";
+
+  function checkPassword() {
+    const input = document.getElementById("password-input");
+    if (input.value === ADMIN_PASSWORD) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("admin-panel").style.display = "block";
+    } else {
+      const err = document.getElementById("login-error");
+      err.style.display = "block";
+      input.value = "";
+      input.focus();
+      setTimeout(() => err.style.display = "none", 2000);
+    }
+  }
+
+  document.getElementById("password-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") checkPassword();
+  });
+
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  function generateMarkdown() {
+    const title = document.getElementById("f-title").value.trim();
+    const brand = document.getElementById("f-brand").value.trim();
+    const year = document.getElementById("f-year").value.trim();
+    const cpu = document.getElementById("f-cpu").value.trim();
+    const ram = document.getElementById("f-ram").value.trim();
+    const storage = document.getElementById("f-storage").value.trim();
+    const display = document.getElementById("f-display").value.trim();
+    const os = document.getElementById("f-os").value.trim();
+    const condition = document.getElementById("f-condition").value;
+    const acquired = document.getElementById("f-acquired").value.trim();
+    const type = document.getElementById("f-type").value;
+    const era = document.getElementById("f-era").value;
+    const tagline = document.getElementById("f-tagline").value.trim();
+    const body = document.getElementById("f-body").value.trim();
+
+    let md = "---\n";
+    md += `title: "${title}"\n`;
+    if (brand) md += `brand: "${brand}"\n`;
+    if (year) md += `year: ${year}\n`;
+    if (cpu) md += `cpu: "${cpu}"\n`;
+    if (ram) md += `ram: "${ram}"\n`;
+    if (storage) md += `storage: "${storage}"\n`;
+    if (display) md += `display: "${display}"\n`;
+    if (os) md += `os: "${os}"\n`;
+    if (condition) md += `condition: "${condition}"\n`;
+    if (acquired) md += `acquired: "${acquired}"\n`;
+    if (tagline) md += `tagline: "${tagline}"\n`;
+    if (brand) md += `brands: ["${brand}"]\n`;
+    if (era) md += `eras: ["${era}"]\n`;
+    if (type) md += `types: ["${type}"]\n`;
+    md += "draft: false\n";
+    md += "---\n\n";
+    if (body) md += body + "\n";
+
+    return { md, slug: slugify(title) };
+  }
+
+  function generatePreview() {
+    const { md } = generateMarkdown();
+    document.getElementById("preview-output").textContent = md;
+    document.getElementById("preview-section").style.display = "block";
+  }
+
+  function downloadFile() {
+    const { md, slug } = generateMarkdown();
+    const blob = new Blob([md], { type: "text/markdown" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (slug || "new-computer") + ".md";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function copyToClipboard() {
+    const { md } = generateMarkdown();
+    navigator.clipboard.writeText(md).then(() => {
+      const toast = document.getElementById("copy-toast");
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 2000);
     });
-  </script>
+  }
+</script>
+
 </body>
 </html>
