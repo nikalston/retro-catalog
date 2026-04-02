@@ -1,0 +1,16 @@
+baseURL = 'https://example.org/'
+locale = 'en-us'
+title = "Boss's Retro Computer Collection"
+theme = 'retro'
+
+[params]
+  description = "A catalog of vintage and retro computers"
+  author = "Boss"
+
+[taxonomies]
+  brand = "brands"
+  era = "eras"
+  type = "types"
+
+[markup.goldmark.renderer]
+  unsafe = true

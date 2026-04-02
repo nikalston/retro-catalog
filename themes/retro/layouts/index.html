@@ -1,0 +1,25 @@
+{{ define "main" }}
+<h2 style="margin-bottom: 1rem;">SYSTEM STATUS: ONLINE</h2>
+<p>Welcome to the collection. {{ len (where .Site.RegularPages "Section" "computers") }} machines cataloged and counting.</p>
+
+<h2 style="margin: 2rem 0 0.5rem;">// LATEST ADDITIONS</h2>
+<div class="computer-grid">
+  {{ range first 6 (where .Site.RegularPages "Section" "computers") }}
+  <a href="{{ .RelPermalink }}" style="text-decoration: none; color: inherit;">
+    <div class="computer-card">
+      {{ with .Params.image }}
+      <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+      {{ end }}
+      <h2>{{ .Title }}</h2>
+      <div class="meta">
+        <span>{{ .Params.brand }}</span>
+        <span>{{ .Params.year }}</span>
+      </div>
+      <p class="description">{{ .Params.tagline }}</p>
+    </div>
+  </a>
+  {{ end }}
+</div>
+
+<p style="margin-top: 1rem;"><a href="{{ "computers/" | relURL }}">VIEW FULL CATALOG >></a></p>
+{{ end }}

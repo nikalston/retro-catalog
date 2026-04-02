@@ -1,0 +1,32 @@
+{{ define "main" }}
+<div class="computer-detail">
+  <a href="{{ "computers/" | relURL }}" class="back-link">Back to Catalog</a>
+
+  <h1>{{ .Title }}</h1>
+
+  {{ with .Params.image }}
+  <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+  {{ end }}
+
+  <table class="specs-table">
+    {{ with .Params.brand }}<tr><td>Brand</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.year }}<tr><td>Year</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.cpu }}<tr><td>CPU</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.ram }}<tr><td>RAM</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.storage }}<tr><td>Storage</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.display }}<tr><td>Display</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.os }}<tr><td>OS</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.condition }}<tr><td>Condition</td><td>{{ . }}</td></tr>{{ end }}
+    {{ with .Params.acquired }}<tr><td>Acquired</td><td>{{ . }}</td></tr>{{ end }}
+  </table>
+
+  <div class="content">
+    {{ .Content }}
+  </div>
+
+  <div style="margin-top: 1.5rem;">
+    {{ with .Params.brands }}{{ range . }}<a href="{{ "brands/" | relURL }}{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}{{ end }}
+    {{ with .Params.eras }}{{ range . }}<a href="{{ "eras/" | relURL }}{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}{{ end }}
+  </div>
+</div>
+{{ end }}

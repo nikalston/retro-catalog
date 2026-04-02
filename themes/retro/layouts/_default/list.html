@@ -1,0 +1,13 @@
+{{ define "main" }}
+<h2 style="margin-bottom: 1rem;">// {{ .Title | upper }}</h2>
+
+{{ if .IsPage }}
+  {{ .Content }}
+{{ else }}
+  <ul class="taxonomy-list">
+  {{ range .Pages }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}{{ if .Pages }} ({{ len .Pages }}){{ end }}</a></li>
+  {{ end }}
+  </ul>
+{{ end }}
+{{ end }}

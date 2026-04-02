@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="{{ "/" | relURL }}">{{ .Site.Title }}</a></h1>
+      <p class="tagline">{{ .Site.Params.description }}<span class="cursor"></span></p>
+      <nav>
+        <a href="{{ "/" | relURL }}">HOME</a>
+        <a href="{{ "computers/" | relURL }}">CATALOG</a>
+        <a href="{{ "brands/" | relURL }}">BRANDS</a>
+        <a href="{{ "eras/" | relURL }}">ERAS</a>
+        <a href="{{ "about/" | relURL }}">ABOUT</a>
+      </nav>
+    </header>
+
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    <footer>
+      <p>&copy; {{ now.Year }} {{ .Site.Params.author }} // Retro Computer Collection // Powered by Hugo</p>
+    </footer>
+  </div>
+</body>
+</html>

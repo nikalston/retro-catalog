@@ -1,0 +1,23 @@
+{{ define "main" }}
+<h2 style="margin-bottom: 1rem;">// FULL CATALOG</h2>
+<p style="margin-bottom: 1rem;">{{ len .Pages }} machines in the collection</p>
+
+<div class="computer-grid">
+  {{ range .Pages.ByParam "year" }}
+  <a href="{{ .RelPermalink }}" style="text-decoration: none; color: inherit;">
+    <div class="computer-card">
+      {{ with .Params.image }}
+      <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+      {{ end }}
+      <h2>{{ .Title }}</h2>
+      <div class="meta">
+        <span>{{ .Params.brand }}</span>
+        <span>{{ .Params.year }}</span>
+        {{ with .Params.type }}<span>{{ . }}</span>{{ end }}
+      </div>
+      <p class="description">{{ .Params.tagline }}</p>
+    </div>
+  </a>
+  {{ end }}
+</div>
+{{ end }}
