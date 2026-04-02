@@ -20,7 +20,7 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Brand", name: "brand", widget: "string" }
-      - { label: "Year", name: "year", widget: "number", value_type: "int" }
+      - { label: "Year", name: "year", widget: "number" }
       - { label: "CPU", name: "cpu", widget: "string", required: false }
       - { label: "RAM", name: "ram", widget: "string", required: false }
       - { label: "Storage", name: "storage", widget: "string", required: false }
@@ -31,7 +31,7 @@ collections:
       - { label: "Tagline", name: "tagline", widget: "string" }
       - { label: "Image", name: "image", widget: "image", required: false }
       - { label: "Brands", name: "brands", widget: "list", required: false }
-      - { label: "Eras", name: "eras", widget: "select", options: ["1970s", "1980s", "1990s", "2000s"], required: false, multiple: true }
+      - { label: "Eras", name: "eras", widget: "list", required: false }
       - { label: "Types", name: "types", widget: "list", required: false }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
