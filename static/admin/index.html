@@ -4,8 +4,25 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Retro Catalog Admin</title>
+  <script>
+    window.CMS_MANUAL_INIT = true;
+  </script>
 </head>
 <body>
   <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  <script>
+    const { init } = window.CMS;
+    init({
+      config: {
+        backend: {
+          name: 'github',
+          repo: 'nikalston/retro-catalog',
+          branch: 'main',
+          auth_type: 'pkce',
+          app_id: 'Iv23liE7KI0U8YgwgwsO'
+        }
+      }
+    });
+  </script>
 </body>
 </html>
